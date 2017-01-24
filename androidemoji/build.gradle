@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
-//apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.github.dcendents.android-maven'
 
-
+group='com.github.kaitkulov'
 
 android {
     compileSdkVersion 25
@@ -10,6 +10,8 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
     }
     lintOptions {
         abortOnError false
@@ -18,7 +20,6 @@ android {
 
 dependencies {
     compile 'com.android.support:support-v4:25.1.0'
-
 }
 
 

@@ -101,7 +101,7 @@ public class EmojIconActions {
     }
 
 
-    public void ShowEmojIcon( )
+    public void showEmojIcon( )
     {
 
         //Will automatically set size according to the soft keyboard size

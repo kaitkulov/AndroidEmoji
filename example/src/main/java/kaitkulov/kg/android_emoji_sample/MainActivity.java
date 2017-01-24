@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         emojiconEditText = (EmojiconEditText) findViewById(R.id.emojicon_edit_text);
         textView = (EmojiconTextView) findViewById(R.id.textView);
         emojIcon=new EmojIconActions(this,rootView,emojiconEditText,emojiButton);
-        emojIcon.ShowEmojIcon();
+        emojIcon.showEmojIcon();
         emojIcon.setKeyboardListener(new EmojIconActions.KeyboardListener() {
             @Override
             public void onKeyboardOpen() {
