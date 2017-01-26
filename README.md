@@ -13,13 +13,12 @@ Add it in your root build.gradle at the end of repositories:
 Step 2. Add the dependency
 
 	dependencies {
-	        compile 'com.github.kaitkulov:AndroidEmoji:1.0'
+	        compile 'com.github.kaitkulov:AndroidEmoji:1.1'
 	}
 
 ## Acknowledgements
 
 Based on Hani Al-Momani's [library SuperNova-Emoji Github](https://github.com/hani-momanii/SuperNova-Emoji/).
-
-Based on Hieu Rocker's [library Emojicon Github](https://github.com/rockerhieu/emojicon/).
+      and Hieu Rocker's [library Emojicon Github](https://github.com/rockerhieu/emojicon/).
 
 Emojicon is using emojis graphics from [emoji-cheat-sheet.com](https://github.com/arvida/emoji-cheat-sheet.com/tree/master/public/graphics/emojis).
