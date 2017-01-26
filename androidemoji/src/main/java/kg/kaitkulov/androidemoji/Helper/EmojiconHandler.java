@@ -26,7 +26,7 @@ import java.util.Map;
 import kg.kaitkulov.androidemoji.R;
 
 /**
- * @author Hani Al Momani (hani.momanii@gmail.com)
+ * @author Hieu Rocker (rockerhieu@gmail.com)
  */
 
 
@@ -36,7 +36,17 @@ public final class EmojiconHandler {
 
     private static final SparseIntArray sEmojisMap = new SparseIntArray(1029);
     private static final SparseIntArray sSoftbanksMap = new SparseIntArray(471);
+    private static final SparseIntArray sEmojiModifiersMap = new SparseIntArray(5);
     private static Map<String, Integer> sEmojisModifiedMap = new HashMap<>();
+
+    static {
+        sEmojiModifiersMap.put(0x1f3fb, 1);
+        sEmojiModifiersMap.put(0x1f3fc, 1);
+        sEmojiModifiersMap.put(0x1f3fd, 1);
+        sEmojiModifiersMap.put(0x1f3fe, 1);
+        sEmojiModifiersMap.put(0x1f3ff, 1);
+    }
+
 
     static {
         // People
@@ -1134,14 +1144,27 @@ public final class EmojiconHandler {
         int textLengthToProcessMax = textLength - index;
         int textLengthToProcess = length < 0 || length >= textLengthToProcessMax ? textLength : (length + index);
 
-        // remove spans throughout all text
         EmojiconSpan[] oldSpans = text.getSpans(0, textLength, EmojiconSpan.class);
+        int spanStarts[] = new int[oldSpans.length];
+        int sp = 0;
         for (int i = 0; i < oldSpans.length; i++) {
-            text.removeSpan(oldSpans[i]);
+            int spanStart = text.getSpanStart(oldSpans[i]);
+            if (spanStart < index) sp++;
+            spanStarts[i] = spanStart;
         }
 
         int skip;
         for (int i = index; i < textLengthToProcess; i += skip) {
+            if (sp < oldSpans.length) {
+                int spanStart = spanStarts[sp];
+                if (spanStart == i) {
+                    int spanEnd = text.getSpanEnd(oldSpans[sp]);
+                    skip = spanEnd - spanStart;
+                    sp++;
+                    continue;
+                }
+            }
+
             skip = 0;
             int icon = 0;
             char c = text.charAt(i);
@@ -1191,7 +1214,7 @@ public final class EmojiconHandler {
                         }
                         skip += followSkip;
 
-                    } else {
+                    } else if (sEmojiModifiersMap.get(followUnicode, 0) > 0) {
                         //handle other emoji modifiers
                         int followSkip = Character.charCount(followUnicode);
 
@@ -1222,7 +1245,7 @@ public final class EmojiconHandler {
             }
 
             if (icon > 0) {
-                text.setSpan(new EmojiconSpan(context, icon, emojiSize), i, i + skip, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                text.setSpan(new EmojiconSpan(context, icon, emojiSize, emojiAlignment, textSize), i, i + skip, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
         }
     }
