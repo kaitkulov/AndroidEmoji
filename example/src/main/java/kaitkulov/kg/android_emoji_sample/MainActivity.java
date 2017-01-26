@@ -2,25 +2,27 @@ package kaitkulov.kg.android_emoji_sample;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 
 import kg.kaitkulov.androidemoji.Actions.EmojIconActions;
 import kg.kaitkulov.androidemoji.Helper.EmojiconEditText;
-import kg.kaitkulov.androidemoji.Helper.EmojiconTextView;
 
 public class MainActivity extends AppCompatActivity {
-
-    CheckBox mCheckBox;
+    RecyclerView recyclerView;
     EmojiconEditText emojiconEditText;
-    EmojiconTextView textView;
     ImageView emojiButton;
     ImageView submitButton;
     View rootView;
     EmojIconActions emojIcon;
+    private boolean defaultEmoji;
+    private EmojiAdapter adapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,45 +32,51 @@ public class MainActivity extends AppCompatActivity {
         rootView = findViewById(R.id.root_view);
         emojiButton = (ImageView) findViewById(R.id.emoji_btn);
         submitButton = (ImageView) findViewById(R.id.submit_btn);
-        mCheckBox = (CheckBox) findViewById(R.id.use_system_default);
         emojiconEditText = (EmojiconEditText) findViewById(R.id.emojicon_edit_text);
-        textView = (EmojiconTextView) findViewById(R.id.textView);
-        emojIcon=new EmojIconActions(this,rootView,emojiconEditText,emojiButton);
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+
+        adapter = new EmojiAdapter();
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(adapter);
+
+        emojIcon = new EmojIconActions(this, rootView, emojiconEditText, emojiButton);
         emojIcon.showEmojIcon();
         emojIcon.setKeyboardListener(new EmojIconActions.KeyboardListener() {
             @Override
             public void onKeyboardOpen() {
-                Log.e("Keyboard","open");
+                Log.e("Keyboard", "open");
             }
 
             @Override
             public void onKeyboardClose() {
-                Log.e("Keyboard","close");
+                Log.e("Keyboard", "close");
             }
         });
-
-        mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                emojIcon.setUseSystemEmoji(b);
-                textView.setUseSystemDefault(b);
-            }
-        });
-
 
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String newText = emojiconEditText.getText().toString();
-                textView.setText(newText);
+                adapter.addItem(emojiconEditText.getText().toString());
+                emojiconEditText.setText("");
+                recyclerView.scrollToPosition(adapter.getItemCount() - 1);
             }
         });
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
-
-
-
-
-
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_default) {
+            defaultEmoji = !defaultEmoji;
+            item.setTitle(defaultEmoji ? " Use Custom" : "Use Default");
+            emojIcon.setUseSystemEmoji(defaultEmoji);
+            adapter.setUseSystemDefault(defaultEmoji);
+        }
+        return true;
+    }
 }
