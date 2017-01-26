@@ -18,6 +18,8 @@ package kg.kaitkulov.androidemoji.Helper;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.text.style.DynamicDrawableSpan;
 import android.util.AttributeSet;
 import android.widget.EditText;
@@ -27,12 +29,16 @@ import kg.kaitkulov.androidemoji.R;
 /**
  * @author Hieu Rocker (rockerhieu@gmail.com).
  * @author Hani Al Momani (hani.momanii@gmail.com)
+ * @author Kanimet Aitkulov (kani.aitkulov@gmail.com)
  */
-public class EmojiconEditText extends EditText {
+public class EmojiconEditText extends EditText implements TextWatcher {
     private int mEmojiconSize;
     private int mEmojiconAlignment;
     private int mEmojiconTextSize;
     private boolean mUseSystemDefault = false;
+    private int start = -1;
+    private int count = -1;
+
 
     public EmojiconEditText(Context context) {
         super(context);
@@ -58,11 +64,35 @@ public class EmojiconEditText extends EditText {
         a.recycle();
         mEmojiconTextSize = (int) getTextSize();
         setText(getText());
+        this.addTextChangedListener(this);
     }
 
     @Override
-    protected void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
-        updateText();
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+        if (this.start == -2) return;
+        if (this.start == -1 && count > 0) {
+            // When text is added
+            this.start = start;
+            this.count = count;
+        }
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+        if (start >= 0) {
+            float textSize = getTextSize();
+            int pos = start;
+
+            start = -2;
+            EmojiconHandler.addEmojis(getContext(), s, mEmojiconSize,
+                    mEmojiconAlignment, mEmojiconTextSize, pos, count, mUseSystemDefault);
+            start = -1;
+        }
     }
 
     /**
