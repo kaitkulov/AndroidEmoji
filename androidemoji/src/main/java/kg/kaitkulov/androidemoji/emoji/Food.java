@@ -21,9 +21,7 @@ package kg.kaitkulov.androidemoji.emoji;
  * @author Hani Al Momani (hani.momanii@gmail.com)
  */
 public class Food {
-
     public static final Emojicon[] DATA = new Emojicon[]{
-
             Emojicon.fromCodePoint(0x1f34f),
             Emojicon.fromCodePoint(0x1f34e),
             Emojicon.fromCodePoint(0x1f350),
@@ -91,9 +89,5 @@ public class Food {
             Emojicon.fromCodePoint(0x1f37c),
             Emojicon.fromCodePoint(0x1f374),
             Emojicon.fromCodePoint(0x1f37d),
-
-
     };
-
-
 }
